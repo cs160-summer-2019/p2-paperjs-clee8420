@@ -39,9 +39,9 @@
 
 	<script type="text/javascript" canvas="canvas">
 		window.onload = function() {
-			var canvas = document.getElementById('myCanvas');
-
-			// coloring page
+      paper.install(window);
+      
+      var canvas = document.getElementById('myCanvas');
 			var mandala = {
 				item: null,
 				lastClicked: null,
@@ -55,17 +55,55 @@
 				$container: $('#color-palette')
 			}
 
-			// your rectangle gradient interaction goes in this function
-			// you may also add code outside of the function (e.g., global variables)
+      
+      
+			// your rectangle gradient interaction goes in this function *****
+			// you may also add code outside of the function (e.g., global variables)*****
 			function myGradientInteraction(){
 				var tool = new paper.Tool();
 
-				tool.onMouseDown = function (event) {
+        var middle_rectangle = new paper.Rectangle({
+            point: [300, 325],
+            size: [150, 100]
+        });
+//         middle_rectangle.strokeColor = 'black';
+//         middle_rectangle.fillColor = '$FF0000';
+        
+        var shape = new Shape.Rectangle(middle_rectangle);
+        shape.strokeColor = 'black';
+        shape.fillColor='red';
+
+        
+        var x1,y1,x2,y2;
+        var point1, point2;
+				shape.onMouseDown = function (event) {
+          point1 = event.point;
+          x1= point1.x;
+          y1= point1.y;
 
 				}
 
-				tool.onMouseUp = function (event) {
-					
+				shape.onMouseUp = function (event) {
+          point2 = event.point;
+          x2 = point2.x;
+          y2 = point2.y;
+          
+          var topLeft = [x1,y1];
+          var bottomRight = [x2,y2];
+          var placeholder;
+          if(cp["history"].length<2){
+            placeholder=['#FFEB3B', '#009688'];
+          }else{
+            placeholder=[cp.history[cp.history.length - 2], cp.history[cp.history.length - 1]]
+          }
+          shape.fillColor={
+             gradient: {
+                  stops: placeholder
+              },
+              origin: topLeft,
+              destination: bottomRight
+          }
+                 
 				}
 			}
 
@@ -144,5 +182,6 @@
 
 	<canvas id="myCanvas" width="750px" height="750px"></canvas>
 	<div id="color-palette"></div>
+
 </body>
 </html>
