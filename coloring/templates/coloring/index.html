@@ -30,22 +30,35 @@
 
 		#myCanvas {
 			padding-left: 0;
-		    padding-right: 0;
-		    margin-left: auto;
-		    margin-right: auto;
-		    display: block;
+      padding-right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
 		}
+    #example-image{
+      position: absolute;
+      width:400px;
+      height:400px;
+      border:3px solid black;
+      display: flex;
+			flex-wrap: wrap;
+      top: 60px;
+    }
+    
 	</style>
 
 	<script type="text/javascript" canvas="canvas">
+    var color_ok = false;
+    var history_of_moves=[];
+    var history_of_undos=[];
 		window.onload = function() {
       paper.install(window);
-      
       var canvas = document.getElementById('myCanvas');
 			var mandala = {
 				item: null,
 				lastClicked: null,
-				filePath: '/static/coloring/images/mandala-freepik.svg'
+				filePath: '/static/coloring/images/mandala-freepik.svg',
+        history: []
 			};	
 
 			// color palette
@@ -113,10 +126,21 @@
 				var tool = new paper.Tool();
 
 				tool.onMouseDown = function (event) {
-				    var hit = mandala.item.hitTest(event.point, { tolerance: 10, fill: true });
-				    if (hit) {
-				        hit.item.fillColor = cp.history[cp.history.length - 1];
-				    }
+          if(color_ok){
+              var hit = mandala.item.hitTest(event.point, { tolerance: 10, fill: true });
+              
+              if (hit) {
+                  hit.item.fillColor = cp.history[cp.history.length - 1];
+              } 
+              history_of_moves.push({
+                item: hit.item,
+                color: cp.history[cp.history.length - 1]
+              })
+              console.log(history_of_moves);
+          }else{
+            alert("Press start to start coloring");
+          }
+          
 				}
 			}
 
@@ -146,12 +170,13 @@
 					}
 					createColorPalette(cp.options);
 				});
+
 			}
 
 			function init(custom){
 				paper.setup(canvas);
 				getColorsCreatePalette();
-
+        
 				paper.project.importSVG(mandala.filePath, function(item) { 
 					mandala.item = item._children["design-freepik"];
 				    paper.project.insertLayer(0,mandala.item);
@@ -175,13 +200,77 @@
 			} else {
 				init(true);
 			}
+    
 		}
+    //end of window.onload function
+    var interval_handle;
+    function clickHandler(ev){
+      var start = new Date;
+      color_ok = true;
+      interval_handle = setInterval(function() {
+        $('.Timer').text(Math.round((new Date - start) / 1000) + " Seconds");
+      }, 1000);
+    }  
+    function stopHandler(ev){
+      clearInterval(interval_handle);
+      color_ok = false;
+    }
+    function undoHandler(ev){
+      if(history_of_moves.length == 0){
+        //하나도 안칠했을때
+        alert("you can't undo while stopped")
+      }else{
+        if(color_ok){
+          var last_move = history_of_moves.pop();
+          last_move.item.fillColor="#FFFFFF"
+          history_of_undos.push(last_move);
+        }else{
+          alert("you can't undo while stopped")
+        }
+      }
+    }
+    function redoHandler(ev){
+      if(history_of_undos.length==0){
+        alert("nothing to redo")
+      }else{
+        var last_undo = history_of_undos.pop();
+        last_undo.item.fillColor=last_undo.color;
+        history_of_moves.push(last_undo);
+      }
+    }   
+    function resetHandler(ev){
+      location.reload();
+    }   
+   
+    
 	</script>
 </head>
 <body>	
-
+  
 	<canvas id="myCanvas" width="750px" height="750px"></canvas>
-	<div id="color-palette"></div>
-
+	<div id="color-palette">
+  </div>
+  <img id="example-image" src="../../static/coloring/images/colored.jpg" />
+  <div class="time_container">
+     <button id="resetButton" onClick="resetHandler()">
+      Reset
+    </button>
+     <button id="undoButton" onClick="undoHandler()">
+      Undo
+     </button>
+     <button id="redoButton" onClick="redoHandler()">
+      Redo
+     </button>
+     <button id="startButton" onClick="clickHandler()">
+      Start 
+     </button>
+     <button id="stopButton" onClick="stopHandler()">
+      Stop  
+     </button>
+     
+     <p class="Timer">
+       
+     </p>
+  </div>
 </body>
 </html>
