@@ -5,7 +5,9 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   	<title>P3 Coloring</title>
-
+    <!--The next line is a code received from Stack Overflow for making an iamge into a background.  -->
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfjj0ueM8_W0-P8w6H-cfqGMoEkM-6rNkhsItA3bprrARIEiC6" style='position:fixed;top:0px;left:0px;width:100%;height:100%;z-index:-1;'>
+ <p style="text-align:center; color:purple"><font size="6">Objective: Color the image like the figure on the left as fast as possible!</p>
 	<script type="text/javascript" src="{% static 'coloring/vendors/jquery/jquery-3.3.1.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'coloring/vendors/paper/paper-full.min.js' %}"></script>
 
@@ -16,7 +18,8 @@
 			display: flex;
 			flex-wrap: wrap;
 			position: absolute;
-			top: 0;
+			top: 135px;
+      left: 100px;
 		}
 
 		.swatch {
@@ -32,21 +35,41 @@
 			padding-left: 0;
       padding-right: 0;
       margin-left: auto;
-      margin-right: auto;
+      margin-right: 150px;
       display: block;
 		}
     #example-image{
       position: absolute;
-      width:400px;
-      height:400px;
+      width:500px;
+      height:500px;
       border:3px solid black;
       display: flex;
 			flex-wrap: wrap;
-      top: 60px;
+      top: 235px;
     }
+    #resetButton {  
+    color : white;
+    background : blue;
+}
+        #undoButton {  
+    color : white;
+    background : red;
+}
+        #redoButton {  
+    color : white;
+    background : green;
+}
+        #startButton {  
+    color : white;
+    background : purple;
+}
+        #stopButton {  
+    color : white;
+    background : orange;
+}
     
 	</style>
-
+  
 	<script type="text/javascript" canvas="canvas">
     var color_ok = false;
     var history_of_moves=[];
@@ -252,19 +275,19 @@
   </div>
   <img id="example-image" src="../../static/coloring/images/colored.jpg" />
   <div class="time_container">
-     <button id="resetButton" onClick="resetHandler()">
+     <button id="resetButton" onClick="resetHandler()" style="width:110px;height:80px;">
       Reset
     </button>
-     <button id="undoButton" onClick="undoHandler()">
+     <button id="undoButton" onClick="undoHandler()" style="width:110px;height:80px;">
       Undo
      </button>
-     <button id="redoButton" onClick="redoHandler()">
+     <button id="redoButton" onClick="redoHandler()" style="width:110px;height:80px;">
       Redo
      </button>
-     <button id="startButton" onClick="clickHandler()">
+     <button id="startButton" onClick="clickHandler()" style="width:110px;height:80px;">
       Start 
      </button>
-     <button id="stopButton" onClick="stopHandler()">
+     <button id="stopButton" onClick="stopHandler()" style="width:110px;height:80px;">
       Stop  
      </button>
      
